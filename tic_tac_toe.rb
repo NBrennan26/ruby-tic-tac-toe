@@ -9,14 +9,14 @@ class Game
     puts 'Please Enter Name for Player 1'
     @p1_name = gets.chomp
     puts 'Please Enter a Marker (letter or number) for Player 1'
-    @p1_marker = gets.chomp
+    @p1_marker = (puts 'Please input a single character' until gets.chomp.match(/^\w$/))
     puts 'Would you like to play against another player, or the computer?'
     puts "Press 'p' for player, or press 'c' for computer"
-    @human_or_ai = (puts "Press 'p' for player, or press 'c' for computer" until gets.chomp.match(/^[pc]/))
+    @human_or_ai = (puts "Press 'p' for player, or press 'c' for computer" until gets.chomp.match(/^[pc]$/))
     puts 'Please Enter Name for Player 2'
     @p2_name = gets.chomp
     puts 'Please Enter a Marker (letter or number) for Player 2'
-    @p2_marker = gets.chomp
+    @p2_marker = (puts 'Please input a single character' until gets.chomp.match(/^\w$/))
   end
 end
 
