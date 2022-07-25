@@ -5,32 +5,21 @@ class Game
     [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
   ]
 
+  attr_reader :players, :human_or_ai
+
   def initialize
-    puts 'Please Enter Name for Player 1'
-    @p1_name = gets.chomp
-    puts 'Please Enter a Marker (letter or number) for Player 1'
-    @p1_marker = gets.chomp[0]
     puts 'Would you like to play against another player, or the computer?'
     puts "Press 'p' for player, or press 'c' for computer"
-    @human_or_ai = (puts "Press 'p' for player, or press 'c' for computer" until gets.chomp.match(/^[pc]$/))
-    puts 'Please Enter Name for Player 2'
-    @p2_name = gets.chomp
-    puts 'Please Enter a Marker (letter or number) for Player 2'
-    @p1_marker = gets.chomp[0]
+    @human_or_ai = gets.chomp
     @players = []
-    @current_player
+    puts @human_or_ai
   end
 
   def create_players
-    @player_one = HumanPlayer.new(@p1_name, @p1_marker, 'p')
-    @players << @player_one
-    @player_two = if @human_or_ai == 'p'
-                    HumanPlayer.new(@p2_name, @p2_marker, 'p')
-                  else
-                    ComputerPlayer.new(@p2_name, @p2_marker, 'c')
-                  end
-    @players << @player_two
-    @current_player = @players[rand(2)]
+    player_one = HumanPlayer.new
+    @players << player_one
+    player_two = @human_or_ai == 'p' ? HumanPlayer.new : ComputerPlayer.new
+    @players << player_two
   end
 
   def change_current_player
@@ -47,10 +36,14 @@ class Game
 end
 
 class Player
-  def initialize(name, marker, is_ai)
-    @name = name
-    @marker = marker
-    @is_ai = is_ai == 'c'
+  @@player_count = 0
+  def initialize
+    puts "Please Enter Name for Player #{@@player_count + 1}"
+    @name = gets.chomp
+    puts "Please Enter a Marker (letter or number) for Player #{@@player_count + 1}"
+    @marker = gets.chomp[0]
+    @is_ai = false
+    @@player_count += 1
   end
 
   def claim_square(square)
@@ -63,6 +56,11 @@ class HumanPlayer < Player
 end
 
 class ComputerPlayer < Player
+  def initialize
+    super
+    @is_ai = true
+  end
+
   def select_random_square
     rand_num = rand(9)
     if board.is_claimed?(rand_num)
@@ -119,6 +117,7 @@ end
 
 game = Game.new
 game.create_players
+p game.players
 
 board = Board.new
 board.display_board_keys
