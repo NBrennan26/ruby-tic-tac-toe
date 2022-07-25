@@ -5,6 +5,8 @@ class Game
     [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
   ]
 
+  attr_reader :player_one, :player_two, :p1_marker, :p2_marker
+
   def initialize
     puts 'Please Enter Name for Player 1'
     @p1_name = gets.chomp
@@ -17,12 +19,36 @@ class Game
     @p2_name = gets.chomp
     puts 'Please Enter a Marker (letter or number) for Player 2'
     @p2_marker = (puts 'Please input a single character' until gets.chomp.match(/^\w$/))
+    puts @p2_marker
+  end
+
+  def create_players
+    @player_one = HumanPlayer.new(@p1_name, @p1_marker, 'p')
+    @player_two = if @human_or_ai == 'p'
+                    HumanPlayer.new(@p2_name, @p2_marker, 'p')
+                  else
+                    ComputerPlayer.new(@p2_name, @p2_marker, 'c')
+                  end
+  end
+
+  def change_current_player
+    # Code
+  end
+
+  def check_for_winner
+    # Code
+  end
+
+  def end_game
+    # Code
   end
 end
 
 class Player
-  def initialize(name)
+  def initialize(name, marker, is_ai)
     @name = name
+    @marker = marker
+    @is_ai = is_ai == 'c'
   end
 
   def claim_square(square)
@@ -35,7 +61,14 @@ class HumanPlayer < Player
 end
 
 class ComputerPlayer < Player
-  # Code
+  def select_random_square
+    rand_num = rand(9)
+    if board.is_claimed?(rand_num)
+      select_random_square
+    else
+      claim_square(rand_num, self)
+    end
+  end
 end
 
 class Board
@@ -83,6 +116,11 @@ class Board
 end
 
 game = Game.new
+game.create_players
+p game.player_one
+p game.player_two
+p game.p1_marker
+p game.p2_marker
 
 board = Board.new
 board.display_board_keys
