@@ -5,30 +5,32 @@ class Game
     [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
   ]
 
-  attr_reader :player_one, :player_two, :p1_marker, :p2_marker
-
   def initialize
     puts 'Please Enter Name for Player 1'
     @p1_name = gets.chomp
     puts 'Please Enter a Marker (letter or number) for Player 1'
-    @p1_marker = (puts 'Please input a single character' until gets.chomp.match(/^\w$/))
+    @p1_marker = gets.chomp[0]
     puts 'Would you like to play against another player, or the computer?'
     puts "Press 'p' for player, or press 'c' for computer"
     @human_or_ai = (puts "Press 'p' for player, or press 'c' for computer" until gets.chomp.match(/^[pc]$/))
     puts 'Please Enter Name for Player 2'
     @p2_name = gets.chomp
     puts 'Please Enter a Marker (letter or number) for Player 2'
-    @p2_marker = (puts 'Please input a single character' until gets.chomp.match(/^\w$/))
-    puts @p2_marker
+    @p1_marker = gets.chomp[0]
+    @players = []
+    @current_player
   end
 
   def create_players
     @player_one = HumanPlayer.new(@p1_name, @p1_marker, 'p')
+    @players << @player_one
     @player_two = if @human_or_ai == 'p'
                     HumanPlayer.new(@p2_name, @p2_marker, 'p')
                   else
                     ComputerPlayer.new(@p2_name, @p2_marker, 'c')
                   end
+    @players << @player_two
+    @current_player = @players[rand(2)]
   end
 
   def change_current_player
@@ -117,10 +119,6 @@ end
 
 game = Game.new
 game.create_players
-p game.player_one
-p game.player_two
-p game.p1_marker
-p game.p2_marker
 
 board = Board.new
 board.display_board_keys
