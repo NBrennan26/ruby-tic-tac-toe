@@ -8,13 +8,26 @@ class Game
   def initialize
     puts 'Please Enter Name for Player 1'
     @p1_name = gets.chomp
+    puts 'Please Enter a Marker (letter or number) for Player 1'
+    @p1_marker = gets.chomp
+    puts 'Would you like to play against another player, or the computer?'
+    puts "Press 'p' for player, or press 'c' for computer"
+    @human_or_ai = (puts "Press 'p' for player, or press 'c' for computer" until gets.chomp.match(/^[pc]/))
     puts 'Please Enter Name for Player 2'
     @p2_name = gets.chomp
+    puts 'Please Enter a Marker (letter or number) for Player 2'
+    @p2_marker = gets.chomp
   end
 end
 
 class Player
-  # Code
+  def initialize(name)
+    @name = name
+  end
+
+  def claim_square(square)
+    board.assign_square(square, self) unless board.is_claimed?(square)
+  end
 end
 
 class HumanPlayer < Player
@@ -32,6 +45,14 @@ class Board
 
   def initialize
     @board_values = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  end
+
+  def is_claimed?(square)
+    board_values[square] != ' '
+  end
+
+  def assign_square(square, player)
+    board_values[square] = player.marker
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -61,8 +82,8 @@ class Board
   # rubocop:enable Metrics/AbcSize
 end
 
+game = Game.new
+
 board = Board.new
 board.display_board_keys
 board.display_current_board
-
-game = Game.new
