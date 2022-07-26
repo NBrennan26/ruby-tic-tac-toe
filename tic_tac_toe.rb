@@ -16,7 +16,7 @@ class Game
   ]
   ROW_DIVIDER = '---+---+---'
 
-  attr_reader :board_values, :players
+  attr_reader :board_values, :players, :current_player
 
   include Begin
 
@@ -36,11 +36,6 @@ class Game
     player_two = @human_or_ai == 'p' ? HumanPlayer.new(self) : ComputerPlayer.new(self)
     @players << player_two
     @current_player = @players[rand(2)]
-  end
-
-  def current_player
-    puts @current_player
-    @current_player
   end
 
   def player_won?(player)
@@ -65,6 +60,7 @@ class Game
         @game_winner = @current_player
         process_end_game
       else
+        wipe_screen
         @current_player = current_player == players[0] ? players[1] : players[0]
         @current_player.claim_square
       end
@@ -72,6 +68,7 @@ class Game
   end
 
   def process_end_game
+    wipe_screen
     display_current_board
     if @game_status == 'draw'
       puts "It's a DRAW"
@@ -83,6 +80,7 @@ class Game
     play_again = gets.chomp
     if play_again == 'y'
       # Play again code
+      wipe_screen
       @players[0].reset_count
       begin_game
     end
@@ -125,6 +123,10 @@ class Game
 
     HEREDOC
   end
+
+  def wipe_screen
+    puts "\e[H\e[2J"
+  end
 end
 
 # Player Superclass
@@ -142,19 +144,20 @@ class Player
     @is_ai = false
     @game = game
     @@player_count += 1
+    @game.wipe_screen
   end
 
   def claim_square
     @game.display_current_board
     puts "#{@name}, please select the square you would like to take (0-8)"
     square = gets.chomp.to_i
-    @game.assign_square(square, self) unless @game.square_claimed?(square)
-  end
-
-  def give_info
-    puts "Player Name - #{@name}"
-    puts "Player Marker - #{@marker}"
-    puts "Player is AI - #{@is_ai}"
+    # @game.assign_square(square, self) unless @game.square_claimed?(square)
+    if @game.square_claimed?(square)
+      @game.wipe_screen
+      claim_square
+    else
+      @game.assign_square(square, self)
+    end
   end
 
   def reset_count
@@ -178,7 +181,7 @@ class ComputerPlayer < Player
     if @game.square_claimed?(rand_num)
       claim_square
     else
-      puts "#{@name} selects square #{rand_num}"
+      # puts "#{@name} selects square #{rand_num}"
       @game.assign_square(rand_num, self)
     end
   end
