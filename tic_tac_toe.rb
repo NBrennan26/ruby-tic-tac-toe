@@ -15,6 +15,8 @@ class Game
     @human_or_ai = gets.chomp
     @players = []
     @board_values = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+    @game_over = false
+    @game_status = 'playing'
   end
 
   def create_players
@@ -36,6 +38,26 @@ class Game
     end
   end
 
+  def game_draw?
+    board_full? && !player_won?(player)
+  end
+
+  def process_play
+    until @game_over
+      if game_draw?
+        @game_status = 'draw'
+        @game_over = true
+      elsif player_won?(@current_player)
+        @game_status = 'won'
+        @game_over = true
+        @game_winner = @current_player
+      else
+        @current_player = current_player == players[0] ? players[1] : players[0]
+        @current_player.claim_square
+      end
+    end
+  end
+
   # Board Methods
   def square_claimed?(square)
     board_values[square] != ' '
@@ -43,6 +65,8 @@ class Game
 
   def assign_square(square, player)
     board_values[square] = player.marker
+    process_play
+    # player_won?(player)
   end
 
   def board_empty?
@@ -78,17 +102,6 @@ class Game
   end
 end
 
-
-
-
-
-
-
-
-
-
-
-
 # Player Superclass
 class Player
   attr_reader :marker
@@ -106,9 +119,9 @@ class Player
   end
 
   def claim_square
-    puts 'Please select the square you would like to take'
+    @game.display_current_board
+    puts "#{@name}, please select the square you would like to take"
     square = gets.chomp.to_i
-    # @game.board_values[square] = @marker unless @game.square_claimed?(square)
     @game.assign_square(square, self) unless @game.square_claimed?(square)
   end
 
@@ -135,7 +148,7 @@ class ComputerPlayer < Player
     if @game.square_claimed?(rand_num)
       claim_square
     else
-      puts "Computer selects square #{rand_num}"
+      puts "#{@name} selects square #{rand_num}"
       @game.assign_square(rand_num, self)
     end
   end
@@ -143,19 +156,21 @@ end
 
 game = Game.new
 game.create_players
+game.process_play
 
-game.display_board_keys
-game.display_current_board
-game.current_player
+# game.display_board_keys
+# game.display_current_board
 
-game.board_empty?
-game.board_full?
+# game.board_empty?
+# game.board_full?
 
-game.current_player.claim_square
-game.display_current_board
+# game.current_player.claim_square
+# game.display_current_board
 
-game.players[1].claim_square
-game.display_current_board
+# game.players[1].claim_square
+# game.display_current_board
+
+#####
 
 # game.access_players.each do |player|
 #   p player.give_info
@@ -196,13 +211,13 @@ game.display_current_board
 # given board_values and WINNING COMBOS
 # If the board values at WINNING COMBOS are all either players marker, they win
 # for each |combo| in WINNING_COMBOS
-  # for each |value| in combo
-    # if @board_values[value]
-  #board_values[]
+# for each |value| in combo
+# if @board_values[value]
+# board_values[]
 
 #  WINNING_COMBOS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 #  @board_values = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 
 # def player_won?(player)
 # winning_combos.any? do |combo|
-# combo.all? { |square| @board_values[sqaure] == player.marker } 
+# combo.all? { |square| @board_values[sqaure] == player.marker }
