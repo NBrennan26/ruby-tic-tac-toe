@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-[Check it Out](https://replit.com/@NBrennan26/ruby-tic-tac-toe#.replit)
+[Check it Out](https://replit.com/@NBrennan26/RubyTicTacToe)
 
 Tic-Tac-Toe created in Ruby
 

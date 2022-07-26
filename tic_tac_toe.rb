@@ -21,6 +21,7 @@ class Game
   include Begin
 
   def initialize
+    puts ' '
     puts 'Would you like to play against another player, or the computer?'
     puts "Press 'p' for player, or press 'c' for computer"
     @human_or_ai = gets.chomp
