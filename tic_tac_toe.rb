@@ -184,70 +184,7 @@ class ComputerPlayer < Player
   end
 end
 
+# Initiate Game
 game = Game.new
 game.create_players
 game.process_play
-
-# game.display_board_keys
-# game.display_current_board
-
-# game.board_empty?
-# game.board_full?
-
-# game.current_player.claim_square
-# game.display_current_board
-
-# game.players[1].claim_square
-# game.display_current_board
-
-#####
-
-# game.access_players.each do |player|
-#   p player.give_info
-#   player.claim_square(game.board, 3)
-# end
-
-# board.display_current_board
-
-########
-#######
-######
-#####
-
-# Ask for square selection
-# Change Turn/current player
-# Player gets square
-# Square is already taken
-# AI picks random square
-# Check for winner (combos)
-# Check for draw (board empty, no winner)
-# End game
-# Ask for reset/new game
-
-# def change_current_player
-# def check_for_winner
-# def end_game
-
-# def select_random_square(board)
-#   rand_num = rand(9)
-#   if board.is_claimed?(rand_num)
-#     select_random_square
-#   else
-#     claim_square(board, rand_num)
-#   end
-# end
-
-# Game win logic
-# given board_values and WINNING COMBOS
-# If the board values at WINNING COMBOS are all either players marker, they win
-# for each |combo| in WINNING_COMBOS
-# for each |value| in combo
-# if @board_values[value]
-# board_values[]
-
-#  WINNING_COMBOS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
-#  @board_values = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-
-# def player_won?(player)
-# winning_combos.any? do |combo|
-# combo.all? { |square| @board_values[sqaure] == player.marker }
