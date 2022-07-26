@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-[Visit the Site](https://games-nb.web.app/)
+[Check it Out](https://replit.com/@NBrennan26/ruby-tic-tac-toe#.replit)
 
 Tic-Tac-Toe created in Ruby
 
@@ -12,7 +12,7 @@ Description will be here later. Probably.
 
 ## Future Plans
 
-- 
+- Improved logic for AI - not just random moves
 
 ## Acknowledgments
 
