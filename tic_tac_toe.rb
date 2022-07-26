@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# Module to initiate gameplay
+module Begin
+  def begin_game
+    game = Game.new
+    game.create_players
+    game.process_play
+  end
+end
+
 # Main Class with most game-driving logic
 class Game
   WINNING_COMBOS = [
@@ -8,6 +17,8 @@ class Game
   ROW_DIVIDER = '---+---+---'
 
   attr_reader :board_values, :players
+
+  include Begin
 
   def initialize
     puts 'Would you like to play against another player, or the computer?'
@@ -39,7 +50,7 @@ class Game
   end
 
   def game_draw?
-    board_full? && !player_won?(player)
+    board_full? && !player_won?(@current_player)
   end
 
   def process_play
@@ -47,14 +58,33 @@ class Game
       if game_draw?
         @game_status = 'draw'
         @game_over = true
+        process_end_game
       elsif player_won?(@current_player)
         @game_status = 'won'
         @game_over = true
         @game_winner = @current_player
+        process_end_game
       else
         @current_player = current_player == players[0] ? players[1] : players[0]
         @current_player.claim_square
       end
+    end
+  end
+
+  def process_end_game
+    display_current_board
+    if @game_status == 'draw'
+      puts "It's a DRAW"
+    else
+      puts "#{@game_winner.name} WON!"
+    end
+    puts 'Would you like to play again?'
+    puts "Press 'y' for YES or press 'n' for NO"
+    play_again = gets.chomp
+    if play_again == 'y'
+      # Play again code
+      @players[0].reset_count
+      begin_game
     end
   end
 
@@ -77,20 +107,15 @@ class Game
     @board_values.none? { |square| square == ' ' }
   end
 
-  def display_board_keys
+  def display_current_board
     puts <<-HEREDOC
 
+      KEY:
        0 | 1 | 2
       #{ROW_DIVIDER}
        3 | 4 | 5
       #{ROW_DIVIDER}
        6 | 7 | 8
-
-    HEREDOC
-  end
-
-  def display_current_board
-    puts <<-HEREDOC
 
        #{@board_values[0]} | #{@board_values[1]} | #{@board_values[2]}
       #{ROW_DIVIDER}
@@ -104,7 +129,8 @@ end
 
 # Player Superclass
 class Player
-  attr_reader :marker
+  attr_accessor :player_count
+  attr_reader :marker, :name
 
   @@player_count = 0
 
@@ -120,7 +146,7 @@ class Player
 
   def claim_square
     @game.display_current_board
-    puts "#{@name}, please select the square you would like to take"
+    puts "#{@name}, please select the square you would like to take (0-8)"
     square = gets.chomp.to_i
     @game.assign_square(square, self) unless @game.square_claimed?(square)
   end
@@ -129,6 +155,10 @@ class Player
     puts "Player Name - #{@name}"
     puts "Player Marker - #{@marker}"
     puts "Player is AI - #{@is_ai}"
+  end
+
+  def reset_count
+    @@player_count = 0
   end
 end
 
