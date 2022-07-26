@@ -7,7 +7,7 @@ class Game
   ]
   ROW_DIVIDER = '---+---+---'
 
-  attr_reader :players, :human_or_ai, :board
+  attr_reader :board_values, :players
 
   def initialize
     puts 'Would you like to play against another player, or the computer?'
@@ -18,9 +18,9 @@ class Game
   end
 
   def create_players
-    player_one = HumanPlayer.new
+    player_one = HumanPlayer.new(self)
     @players << player_one
-    player_two = @human_or_ai == 'p' ? HumanPlayer.new : ComputerPlayer.new
+    player_two = @human_or_ai == 'p' ? HumanPlayer.new(self) : ComputerPlayer.new(self)
     @players << player_two
     @current_player = @players[rand(2)]
   end
@@ -78,25 +78,39 @@ class Game
   end
 end
 
+
+
+
+
+
+
+
+
+
+
+
 # Player Superclass
 class Player
+  attr_reader :marker
+
   @@player_count = 0
-  def initialize
+
+  def initialize(game)
     puts "Please Enter Name for Player #{@@player_count + 1}"
     @name = gets.chomp
     puts "Please Enter a Marker (letter or number) for Player #{@@player_count + 1}"
     @marker = gets.chomp[0]
     @is_ai = false
+    @game = game
     @@player_count += 1
   end
 
-  def claim_square(square)
-
+  def claim_square
+    puts 'Please select the square you would like to take'
+    square = gets.chomp.to_i
+    # @game.board_values[square] = @marker unless @game.square_claimed?(square)
+    @game.assign_square(square, self) unless @game.square_claimed?(square)
   end
-
-  # def claim_square(board, square)
-  #   board.assign_square(square, self) unless board.is_claimed?(square)
-  # end
 
   def give_info
     puts "Player Name - #{@name}"
@@ -106,21 +120,29 @@ class Player
 end
 
 # Human Player Subclass
-class HumanPlayer < Player
-  # Code
-end
+class HumanPlayer < Player; end
 
 # Computer Player Subclass - Can select random square
 class ComputerPlayer < Player
-  def initialize
+  def initialize(game)
     super
     @is_ai = true
+    @game = game
+  end
+
+  def claim_square
+    rand_num = rand(9)
+    if @game.square_claimed?(rand_num)
+      claim_square
+    else
+      puts "Computer selects square #{rand_num}"
+      @game.assign_square(rand_num, self)
+    end
   end
 end
 
 game = Game.new
 game.create_players
-p game.players
 
 game.display_board_keys
 game.display_current_board
@@ -128,6 +150,12 @@ game.current_player
 
 game.board_empty?
 game.board_full?
+
+game.current_player.claim_square
+game.display_current_board
+
+game.players[1].claim_square
+game.display_current_board
 
 # game.access_players.each do |player|
 #   p player.give_info
