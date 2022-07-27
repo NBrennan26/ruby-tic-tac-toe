@@ -13,6 +13,8 @@ Description will be here later. Probably.
 ## Future Plans
 
 - Improved logic for AI - not just random moves
+- Fix both players using the same Marker
+- Improve method privacy
 
 ## Acknowledgments
 
